@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *      This product includes software developed by the University of
+ *      California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,34 +30,34 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)grp.h	5.4 (Berkeley) 4/3/91
+ *      @(#)grp.h       5.4 (Berkeley) 4/3/91
  */
 
 #ifndef _GRP_H_
-#define	_GRP_H_
+#define _GRP_H_
 
 #ifndef _POSIX_SOURCE
-#define	_PATH_GROUP		"/etc/group"
+#define _PATH_GROUP             "/etc/group"
 #endif
 
 struct group {
-	char	*gr_name;		/* group name */
-	char	*gr_passwd;		/* group password */
-	int	gr_gid;			/* group id */
-	char	**gr_mem;		/* group members */
+	char    *gr_name;               /* group name */
+	char    *gr_passwd;             /* group password */
+	int     gr_gid;                 /* group id */
+	char    **gr_mem;               /* group members */
 };
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-__stdargs struct group *getgrgid __P((gid_t));
-__stdargs struct group *getgrnam __P((const char *));
+struct group *getgrgid __P((gid_t));
+struct group *getgrnam __P((const char *));
 #ifndef _POSIX_SOURCE
-__stdargs struct group *getgrent __P((void));
-__stdargs int setgrent __P((void));
-__stdargs void endgrent __P((void));
-__stdargs void setgrfile __P((const char *));
-__stdargs int setgroupent __P((int));
+struct group *getgrent __P((void));
+int setgrent __P((void));
+void endgrent __P((void));
+void setgrfile __P((const char *));
+int setgroupent __P((int));
 #endif
 __END_DECLS
 

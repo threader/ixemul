@@ -72,7 +72,6 @@
 #define CTOBPTR(ptr) (((long)(ptr)) >> 2)
 #define BTOCPTR(ptr) ((void *)((ptr) << 2))
 
-/* this version only works for word-aligned data as you get it from alloca()! */
-#define LONG_ALIGN(ptr) ((void *)((((long)(ptr))&3)?((long)ptr)+2:(long)ptr))
+#define LONG_ALIGN(ptr) ((void *)((((long)(ptr))+3)&~3))
 
 #endif /* _PACKETS_H */

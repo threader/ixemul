@@ -60,9 +60,12 @@ struct timeval {
  * Structure defined by POSIX.4 to be like a timeval.
  */
 struct timespec {
-	time_t	ts_sec;		/* seconds */
-	long	ts_nsec;	/* and nanoseconds */
+	time_t	tv_sec;		/* seconds */
+	long	tv_nsec;	/* and nanoseconds */
 };
+/* For backwards compatibility - Piru */
+#define ts_sec  tv_sec
+#define ts_nsec tv_nsec
 
 #define	TIMEVAL_TO_TIMESPEC(tv, ts) {					\
 	(ts)->ts_sec = (tv)->tv_sec;					\
@@ -136,9 +139,9 @@ struct clockinfo {
 };
 
 #ifdef _KERNEL
-__stdargs int	itimerfix __P((struct timeval *tv));
-__stdargs int	itimerdecr __P((struct itimerval *itp, int usec));
-__stdargs void	microtime __P((struct timeval *tv));
+int	itimerfix __P((struct timeval *tv));
+int	itimerdecr __P((struct itimerval *itp, int usec));
+void	microtime __P((struct timeval *tv));
 #else /* !_KERNEL */
 #include <time.h>
 
@@ -146,12 +149,12 @@ __stdargs void	microtime __P((struct timeval *tv));
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-__stdargs int	adjtime __P((const struct timeval *, struct timeval *));
-__stdargs int	getitimer __P((int, struct itimerval *));
-__stdargs int	gettimeofday __P((struct timeval *, struct timezone *));
-__stdargs int	setitimer __P((int, const struct itimerval *, struct itimerval *));
-__stdargs int	settimeofday __P((const struct timeval *, const struct timezone *));
-__stdargs int	utimes __P((const char *, const struct timeval *));
+int	adjtime __P((const struct timeval *, struct timeval *));
+int	getitimer __P((int, struct itimerval *));
+int	gettimeofday __P((struct timeval *, void *));
+int	setitimer __P((int, const struct itimerval *, struct itimerval *));
+int	settimeofday __P((const struct timeval *, const struct timezone *));
+int	utimes __P((const char *, const struct timeval *));
 __END_DECLS
 #endif /* !POSIX */
 

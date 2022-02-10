@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *      This product includes software developed by the University of
+ *      California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,22 +30,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)ptrace.h	7.4 (Berkeley) 2/22/91
+ *      @(#)ptrace.h    7.4 (Berkeley) 2/22/91
  */
 
-#ifndef	_PTRACE_H_
-#define	_PTRACE_H_
+#ifndef _PTRACE_H_
+#define _PTRACE_H_
 
-#define	PT_TRACE_ME	0	/* child declares it's being traced */
-#define	PT_READ_I	1	/* read word in child's I space */
-#define	PT_READ_D	2	/* read word in child's D space */
-#define	PT_READ_U	3	/* read word in child's user structure */
-#define	PT_WRITE_I	4	/* write word in child's I space */
-#define	PT_WRITE_D	5	/* write word in child's D space */
-#define	PT_WRITE_U	6	/* write word in child's user structure */
-#define	PT_CONTINUE	7	/* continue the child */
-#define	PT_KILL		8	/* kill the child process */
-#define	PT_STEP		9	/* single step the child */
+#define PT_TRACE_ME     0       /* child declares it's being traced */
+#define PT_READ_I       1       /* read word in child's I space */
+#define PT_READ_D       2       /* read word in child's D space */
+#define PT_READ_U       3       /* read word in child's user structure */
+#define PT_WRITE_I      4       /* write word in child's I space */
+#define PT_WRITE_D      5       /* write word in child's D space */
+#define PT_WRITE_U      6       /* write word in child's user structure */
+#define PT_CONTINUE     7       /* continue the child */
+#define PT_KILL         8       /* kill the child process */
+#define PT_STEP         9       /* single step the child */
 #define PT_ATTACH       10      /* attach to running process */
 #define PT_DETACH       11      /* detach from running process */
 #define PT_GETREGS      12      /* read process register */
@@ -64,33 +64,34 @@
 struct ixinfo
 {
   short version;
+  short pad;
   long ixemul_seglist;
   long sigtramp_start;
   long sigtramp_end;
   long ixnet_seglist;
-  __stdargs void (*install_vector)(void);
-  __stdargs void (*restore_vector)(void);
+  void (*install_vector)(void);
+  void (*restore_vector)(void);
 };
 
 #ifdef _KERNEL
 
 struct reg;
 struct fpreg;
-__stdargs int process_read_regs __P((struct user *p, struct reg *regs));
-__stdargs int process_write_regs __P((struct user *p, struct reg *regs));
-__stdargs int process_read_fpregs __P((struct user *p, struct fpreg *regs));
-__stdargs int process_write_fpregs __P((struct user *p, struct fpreg *regs));
-__stdargs int process_set_pc __P((struct user *p, caddr_t addr));
-__stdargs int process_sstep __P((struct user *p, int sstep));
+int process_read_regs __P((struct user *p, struct reg *regs));
+int process_write_regs __P((struct user *p, struct reg *regs));
+int process_read_fpregs __P((struct user *p, struct fpreg *regs));
+int process_write_fpregs __P((struct user *p, struct fpreg *regs));
+int process_set_pc __P((struct user *p, caddr_t addr));
+int process_sstep __P((struct user *p, int sstep));
 
 #else
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-__stdargs int	ptrace __P((int _request, pid_t _pid, caddr_t _addr, int _data));
+int     ptrace __P((int _request, pid_t _pid, caddr_t _addr, int _data));
 __END_DECLS
 
 #endif
 
-#endif	/* !_PTRACE_H_ */
+#endif  /* !_PTRACE_H_ */

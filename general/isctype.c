@@ -18,7 +18,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)isctype.c	5.2 (Berkeley) 6/1/90";
+static char sccsid[] = "@(#)isctype.c   5.2 (Berkeley) 6/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -30,13 +30,17 @@ static char sccsid[] = "@(#)isctype.c	5.2 (Berkeley) 6/1/90";
 #undef isalnum
 int isalnum(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & (_U|_L|_N));
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & (_U|_L|_N));
 }
 
 #undef isalpha
 int isalpha(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & (_U|_L));
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & (_U|_L));
 }
 
 #undef isblank
@@ -50,66 +54,86 @@ isblank(c)
 #undef iscntrl
 int iscntrl(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & _C);
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & _C);
 }
 
 #undef isdigit
 int isdigit(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & _N);
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & _N);
 }
 
 #undef isgraph
 int isgraph(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & (_P|_U|_L|_N));
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & (_P|_U|_L|_N));
 }
 
 #undef islower
 int islower(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & _L);
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & _L);
 }
 
 #undef isprint
 int isprint(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & (_P|_U|_L|_N|_B));
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & (_P|_U|_L|_N|_B));
 }
 
 #undef ispunct
 int ispunct(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & _P);
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & _P);
 }
 
 #undef isspace
 int isspace(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & _S);
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & _S);
 }
 
 #undef isupper
 int isupper(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & _U);
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & _U);
 }
 
 #undef isxdigit
 int isxdigit(int c)
 {
-  return ((_ctype_ + 1)[(unsigned char)c] & (_N|_X));
+  /* Don't allow OOB values or EOF! */
+  if (c & ~0xFF) return 0;
+  return ((_ctype_ + 1)[c] & (_N|_X));
 }
 
 #undef tolower
 int tolower(int c)
 {
+  /* OOB values or EOF is undefined, don't bother checking! */
   return (((_ctype_ + 1)[(unsigned char)c] & _U) ? (c) - 'A' + 'a' : (c));
 }
 
 #undef toupper
 int toupper(int c)
 {
+  /* OOB values or EOF is undefined, don't bother checking! */
   return (((_ctype_ + 1)[(unsigned char)c] & _L) ? (c) - 'a' + 'A' : (c));
 }
 

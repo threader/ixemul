@@ -16,11 +16,11 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- *	@(#)sigset.c	5.2 (Berkeley) 7/1/90
+ *      @(#)sigset.c    5.2 (Berkeley) 7/1/90
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)sigset.c	5.2 (Berkeley) 7/1/90";
+static char sccsid[] = "@(#)sigset.c    5.2 (Berkeley) 7/1/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -63,5 +63,5 @@ sigdelset(sigset_t *set, int signo)
 int
 sigismember(const sigset_t *set, int signo)
 {
-	return ((*set & sigmask(signo)) != 0);
+	return ((*set & ~sigmask(signo)) != 0);
 }

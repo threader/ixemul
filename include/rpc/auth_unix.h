@@ -1,4 +1,4 @@
-/*	$NetBSD: auth_unix.h,v 1.4 1994/10/26 00:56:56 cgd Exp $	*/
+/*      $NetBSD: auth_unix.h,v 1.4 1994/10/26 00:56:56 cgd Exp $        */
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *	from: @(#)auth_unix.h 1.8 88/02/08 SMI
- *	@(#)auth_unix.h	2.2 88/07/29 4.0 RPCSRC
+ *      from: @(#)auth_unix.h 1.8 88/02/08 SMI
+ *      @(#)auth_unix.h 2.2 88/07/29 4.0 RPCSRC
  */
 
 /*
@@ -59,16 +59,16 @@
  * Unix style credentials.
  */
 struct authunix_parms {
-	u_long	 aup_time;
-	char	*aup_machname;
-	int	 aup_uid;
-	int	 aup_gid;
-	u_int	 aup_len;
-	int	*aup_gids;
+	u_long   aup_time;
+	char    *aup_machname;
+	int      aup_uid;
+	int      aup_gid;
+	u_int    aup_len;
+	int     *aup_gids;
 };
 
 __BEGIN_DECLS
-extern __stdargs bool_t xdr_authunix_parms __P((XDR *, struct authunix_parms *));
+extern bool_t xdr_authunix_parms __P((XDR *, struct authunix_parms *));
 __END_DECLS
 
 /* 

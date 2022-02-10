@@ -36,17 +36,18 @@ struct IORequest *
 ix_create_extio(struct MsgPort *ioReplyPort, long size)
 {
   struct IORequest *ioReq;
- 
-  if (! ioReplyPort) return NULL;
+
+  if (! ioReplyPort ||
+      size < sizeof(struct Message)) return NULL;
 
   ioReq = (struct IORequest *) kmalloc (size);
   if (! ioReq) return NULL;
 
-  memset(ioReq, '\0', sizeof(struct IORequest));
-  
-  ioReq->io_Message.mn_Node.ln_Type = NT_MESSAGE;
-  ioReq->io_Message.mn_Length = size;
-  ioReq->io_Message.mn_ReplyPort = ioReplyPort;
-  
+  memset(ioReq, '\0', size < sizeof(struct IORequest) ? size : sizeof(struct IORequest));
+
+  ioReq->io_Message.mn_Node.ln_Type = NT_REPLYMSG;
+  ioReq->io_Message.mn_ReplyPort    = ioReplyPort;
+  ioReq->io_Message.mn_Length       = size;
+
   return ioReq;
 }

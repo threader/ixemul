@@ -68,7 +68,7 @@
 
 int
 __ix_wb_parse(struct Process *ThisProcess, struct WBStartup *WBenchMsg,
-	  char *default_wb_window)
+	  const char *default_wb_window)
 {
   struct Library *IconBase;
   char	*WindowName = NULL;

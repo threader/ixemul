@@ -1,6 +1,7 @@
 /*
     Ixprefs v.2.8--ixemul.library configuration program
-    Copyright © 1995-2001 Kriton Kyrimis
+    Copyright © 1995,1996 Kriton Kyrimis
+    Copyright © 2009 Diego Casorran
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +30,7 @@ extern int translateslash, membuf, blocks, cases, suppress,
 	   amigawildcard, noflush, ignoreenv, networking, enforcerhit,
 	   profilemethod, stackusage, mufs;
 extern int advanced;
+extern int watchAvailMem, catchfailedallocs, killappallocerr;
 
 extern void ShowRequester(char *, int, char *);
 extern void About(void);
@@ -50,3 +52,10 @@ extern int AmigaOSGUI(void);
 extern void EraseGadget(struct Window *, struct Gadget *);
 extern void ShowChecked(int, int);
 #endif /* NO_AMIGAOS_SUPPORT */
+
+#ifndef NO_POS_SUPPORT
+extern int OpenPOSLibraries(void);
+extern void ClosePOSLibraries(void);
+extern void POSCleanup(void);
+extern int POSGUI(void);
+#endif /* NO_POS_SUPPORT */

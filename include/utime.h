@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *      This product includes software developed by the University of
+ *      California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,21 +30,21 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)utime.h	5.4 (Berkeley) 4/3/91
+ *      @(#)utime.h     5.4 (Berkeley) 4/3/91
  */
 
-#ifndef	_UTIME_H_
-#define	_UTIME_H_
+#ifndef _UTIME_H_
+#define _UTIME_H_
 
 struct utimbuf {
-	time_t actime;		/* Access time */
-	time_t modtime;		/* Modification time */
+	time_t actime;          /* Access time */
+	time_t modtime;         /* Modification time */
 };
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-__stdargs int utime __P((const char *, const struct utimbuf *));
+int utime __P((const char *, const struct utimbuf *));
 __END_DECLS
 
 #endif /* !_UTIME_H_ */

@@ -39,6 +39,10 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
+/* ixemul needs 2 bytes alignment for compatibility, libnix doesn't. */
+#ifdef __ixemul__
+//#pragma pack(2)
+#endif
 #if later
 struct stat
 {
@@ -82,6 +86,9 @@ struct	stat
 	long	st_blocks;
 	long	st_spare4[2];
 };
+#endif
+#ifdef __ixemul__
+//#pragma pack()
 #endif
 
 #ifdef __amigaos__
@@ -149,15 +156,15 @@ struct	stat
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-__stdargs mode_t	umask __P((mode_t));
-__stdargs int	chmod __P((const char *, mode_t));
-__stdargs int	fstat __P((int, struct stat *));
-__stdargs int	mkdir __P((const char *, mode_t));
-__stdargs int	mkfifo __P((const char *, mode_t));
-__stdargs int	stat __P((const char *, struct stat *));
+mode_t	umask __P((mode_t));
+int	chmod __P((const char *, mode_t));
+int	fstat __P((int, struct stat *));
+int	mkdir __P((const char *, mode_t));
+int	mkfifo __P((const char *, mode_t));
+int	stat __P((const char *, struct stat *));
 #ifndef _POSIX_SOURCE
-__stdargs int	fchmod __P((int, mode_t));
-__stdargs int	lstat __P((const char *, struct stat *));
+int	fchmod __P((int, mode_t));
+int	lstat __P((const char *, struct stat *));
 #endif /* not POSIX */
 __END_DECLS
 

@@ -140,7 +140,7 @@ sethostname(char *name, int namelen)
 int
 getpagesize(void)
 {
-  return 2048;
+  return 4096;
 }
 
 void sync (void)
@@ -153,8 +153,8 @@ void sync (void)
 }
 
 int
-fork (void)
-{
+fork_disable (void) //avoid that autoconfig find this function
+{                   
   usetup;
   errno = ENOSYS;
   KPRINTF (("&errno = %lx, errno = %ld\n", &errno, errno));

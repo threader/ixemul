@@ -16,9 +16,18 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id:$
+ *  $Id: gethostnamadr.c,v 1.1.1.1 2005/03/15 15:57:09 laire Exp $
  *
- *  $Log:$
+ *  $Log: gethostnamadr.c,v $
+ *  Revision 1.1.1.1  2005/03/15 15:57:09  laire
+ *  a new beginning
+ *
+ *  Revision 1.1.1.1  2000/05/07 19:37:43  emm
+ *  Imported sources
+ *
+ *  Revision 1.1.1.1  2000/04/29 00:45:29  nobody
+ *  Initial import
+ *
  */
 
 #define _KERNEL
@@ -28,16 +37,23 @@
 struct hostent *
 gethostbyname(const char *name)
 {
+	
     usetup;
     register struct ixnet *p = (struct ixnet *)u.u_ixnet;
     register int network_protocol = p->u_networkprotocol;
-
+	static struct hostent * hostent_cache;
+    /*static st_name[255];
+	if (strcmp(&st_name,name)== 0){
+	return hostent_cache;
+	}
+	strcpy(&st_name,name); */
     switch (network_protocol) {
-        case IX_NETWORK_AMITCP:
-            return TCP_GetHostByName(name);
+	case IX_NETWORK_AMITCP:
+		hostent_cache = TCP_GetHostByName(name);
+	    return hostent_cache;
 
-        default: /*case IX_NETWORK_AS225:*/
-            return SOCK_gethostbyname(name);
+	default: /*case IX_NETWORK_AS225:*/
+	    return SOCK_gethostbyname(name);
     }
 }
 
@@ -49,10 +65,10 @@ gethostbyaddr(const char *addr, int len, int type)
     register int network_protocol = p->u_networkprotocol;
 
     switch (network_protocol) {
-        case IX_NETWORK_AMITCP:
-            return TCP_GetHostByAddr(addr,len,type);
+	case IX_NETWORK_AMITCP:
+	    return TCP_GetHostByAddr(addr,len,type);
 
-        default: /*case IX_NETWORK_AS225:*/
-            return SOCK_gethostbyaddr(addr,len,type);
+	default: /*case IX_NETWORK_AS225:*/
+	    return SOCK_gethostbyaddr(addr,len,type);
     }
 }

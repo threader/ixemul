@@ -1,4 +1,4 @@
-/*	$NetBSD: svc_auth.h,v 1.4 1994/10/26 00:57:07 cgd Exp $	*/
+/*      $NetBSD: svc_auth.h,v 1.4 1994/10/26 00:57:07 cgd Exp $ */
 
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
@@ -28,8 +28,8 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- *	from: @(#)svc_auth.h 1.6 86/07/16 SMI
- *	@(#)svc_auth.h	2.1 88/07/29 4.0 RPCSRC
+ *      from: @(#)svc_auth.h 1.6 86/07/16 SMI
+ *      @(#)svc_auth.h  2.1 88/07/29 4.0 RPCSRC
  */
 
 /*
@@ -45,7 +45,7 @@
  * Server side authenticator
  */
 __BEGIN_DECLS
-extern __stdargs enum auth_stat _authenticate __P((struct svc_req *, struct rpc_msg *));
+extern enum auth_stat _authenticate __P((struct svc_req *, struct rpc_msg *));
 __END_DECLS
 
 #endif /* !_RPC_SVCAUTH_H */

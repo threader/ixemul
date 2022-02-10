@@ -20,7 +20,7 @@
 /* Modified by PerOla Valfridsson 910215 */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)qsort.c	5.7 (Berkeley) 5/17/90";
+static char sccsid[] = "@(#)qsort.c     5.7 (Berkeley) 5/17/90";
 #endif /* LIBC_SCCS and not lint */
 
 #define _KERNEL
@@ -28,7 +28,41 @@ static char sccsid[] = "@(#)qsort.c	5.7 (Berkeley) 5/17/90";
 
 #include <stdlib.h>
 
-static void qst(char *base, char *max, int (*qcmp)(), int qsz);
+#ifdef NATIVE_MORPHOS
+#define qsort   _qsort
+#define FLAGPRM     ,int is68k
+#define FLAGARG     , is68k
+
+/* code for:
+	movem.l d0-d1,-(sp)
+	jsr     (a0)
+	addq.l  #8,sp
+	rts
+*/
+static const UWORD cmp_gate[] = {
+	0x48E7,0xC000,0x4E90,0x508F,0x4E75
+};
+
+static inline int my_cmp(const void *p, const void *q, int (*qcmp)(), int is68k) {
+	if (is68k) {
+		REG_D0 = (ULONG)p;
+		REG_D1 = (ULONG)q;
+		REG_A0 = (ULONG)qcmp;
+		//REG_A4 = REG_A4;
+		return MyEmulHandle->EmulCallDirect68k((APTR)cmp_gate);
+	} else {
+		return qcmp(p, q);
+	}
+}
+#define CMP(x, y)   my_cmp(x, y, qcmp, is68k)
+
+#else
+#define FLAGPRM
+#define FLAGARG
+#define CMP(x, y)   qcmp(x, y)
+#endif
+
+static void qst(char *base, char *max, int (*qcmp)(), int qsz  FLAGPRM);
 
 /*
  * qsort.c:
@@ -39,8 +73,8 @@ static void qst(char *base, char *max, int (*qcmp)(), int qsz);
  * The MTHREShold is where we stop finding a better median.
  */
 
-#define		THRESH		4		/* threshold for insertion */
-#define		MTHRESH		6		/* threshold for median */
+#define         THRESH          4               /* threshold for insertion */
+#define         MTHRESH         6               /* threshold for median */
 
 /*
  * qsort:
@@ -50,7 +84,7 @@ static void qst(char *base, char *max, int (*qcmp)(), int qsz);
  */
 
 void
-qsort(void *base, size_t n, size_t qsz, int (*qcmp)())
+qsort(void *base, size_t n, size_t qsz, int (*qcmp)()  FLAGPRM)
 {
 	register char c, *i, *j, *lo, *hi;
 	char *min, *max;
@@ -60,7 +94,7 @@ qsort(void *base, size_t n, size_t qsz, int (*qcmp)())
 
 	max = base + n * qsz;
 	if (n >= THRESH) {
-		qst(base, max, qcmp, qsz);
+		qst(base, max, qcmp, qsz  FLAGARG);
 		hi = base + qsz * THRESH;
 	} else {
 		hi = max;
@@ -72,7 +106,7 @@ qsort(void *base, size_t n, size_t qsz, int (*qcmp)())
 	 * the min, and swapping it into the first position.
 	 */
 	for (j = lo = base; (lo += qsz) < hi; )
-		if (qcmp(j, lo) > 0)
+		if (CMP(j, lo) > 0)
 			j = lo;
 	if (j != base) {
 		/* swap j into place */
@@ -90,7 +124,7 @@ qsort(void *base, size_t n, size_t qsz, int (*qcmp)())
 	 * basis for each element in the frob.
 	 */
 	for (min = base; (hi = (min += qsz)) < max; ) {
-		while (qcmp((hi -= qsz), min) > 0)
+		while (CMP((hi -= qsz), min) > 0)
 			/* void */;
 		if ((hi += qsz) != min) {
 			for (lo = (min + qsz); --lo >= min; ) {
@@ -118,7 +152,7 @@ qsort(void *base, size_t n, size_t qsz, int (*qcmp)())
  * (And there are only three places where this is done).
  */
 
-static void qst(char *base, char *max, int (*qcmp)(), int qsz)
+static void qst(char *base, char *max, int (*qcmp)(), int qsz  FLAGPRM)
 {
 	register char c, *i, *j, *jj;
 	register int ii;
@@ -134,20 +168,20 @@ static void qst(char *base, char *max, int (*qcmp)(), int qsz)
 	 * max with loser of first and take larger.  Things are set up to
 	 * prefer the middle, then the first in case of ties.
 	 */
-	lo = max - base;		/* number of elements as chars */
-	do	{
+	lo = max - base;                /* number of elements as chars */
+	do      {
 		mid = i = base + qsz * ((lo / qsz) >> 1);
 		if (lo >= qsz * MTHRESH) {
-			j = (qcmp((jj = base), i) > 0 ? jj : i);
-			if (qcmp(j, (tmp = max - qsz)) > 0) {
+			j = (CMP((jj = base), i) > 0 ? jj : i);
+			if (CMP(j, (tmp = max - qsz)) > 0) {
 				/* switch to first loser */
 				j = (j == jj ? i : jj);
-				if (qcmp(j, tmp) < 0)
+				if (CMP(j, tmp) < 0)
 					j = tmp;
 			}
 			if (j != i) {
 				ii = qsz;
-				do	{
+				do      {
 					c = *i;
 					*i++ = *j;
 					*j++ = c;
@@ -158,14 +192,14 @@ static void qst(char *base, char *max, int (*qcmp)(), int qsz)
 		 * Semi-standard quicksort partitioning/swapping
 		 */
 		for (i = base, j = max - qsz; ; ) {
-			while (i < mid && qcmp(i, mid) <= 0)
+			while (i < mid && CMP(i, mid) <= 0)
 				i += qsz;
 			while (j > mid) {
-				if (qcmp(mid, j) <= 0) {
+				if (CMP(mid, j) <= 0) {
 					j -= qsz;
 					continue;
 				}
-				tmp = i + qsz;	/* value of i after swap */
+				tmp = i + qsz;  /* value of i after swap */
 				if (i == mid) {
 					/* j <-> mid, new mid is j */
 					mid = jj = j;
@@ -181,12 +215,12 @@ static void qst(char *base, char *max, int (*qcmp)(), int qsz)
 			} else {
 				/* i <-> mid, new mid is i */
 				jj = mid;
-				tmp = mid = i;	/* value of i after swap */
+				tmp = mid = i;  /* value of i after swap */
 				j -= qsz;
 			}
 		swap:
 			ii = qsz;
-			do	{
+			do      {
 				c = *i;
 				*i++ = *jj;
 				*jj++ = c;
@@ -204,13 +238,44 @@ static void qst(char *base, char *max, int (*qcmp)(), int qsz)
 		i = (j = mid) + qsz;
 		if ((lo = j - base) <= (hi = max - i)) {
 			if (lo >= qsz * THRESH)
-				qst(base, j, qcmp, qsz);
+				qst(base, j, qcmp, qsz  FLAGARG);
 			base = i;
 			lo = hi;
 		} else {
 			if (hi >= qsz * THRESH)
-				qst(i, max, qcmp, qsz);
+				qst(i, max, qcmp, qsz  FLAGARG);
 			max = j;
 		}
 	} while (lo >= qsz * THRESH);
 }
+
+#ifdef NATIVE_MORPHOS
+#undef qsort
+#undef CMP
+#undef FLAGPRM
+#undef FLAGARG
+
+void
+qsort(void *base, size_t n, size_t qsz, int (*qcmp)())
+{
+	_qsort(base, n, qsz, qcmp, 0);
+}
+
+void
+_trampoline_qsort(void)
+{
+	int *p = (int *)REG_A7;
+	void *base = (void *)p[1];
+	size_t n = p[2];
+	size_t qsz = p[3];
+	int (*qcmp)() = (int(*)())p[4];
+
+	_qsort(base, n, qsz, qcmp, 1);
+}
+
+const struct EmulLibEntry _gate_qsort = {
+	TRAP_LIBNR, 0, (void(*)())_trampoline_qsort
+};
+
+#endif
+
